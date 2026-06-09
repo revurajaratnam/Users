@@ -1,0 +1,265 @@
+{
+  "id": "buddy-refact_self_critic-91076ecc-d627-4b14-9d66-31b262154f6c",
+  "title": "Refact Self-Critic",
+  "model": "google_gemini/gemma-4-31b-it",
+  "mode": "buddy",
+  "tool_use": "refact_engine_clone,refact_engine_cat,refact_engine_search,search_pattern,buddy_memory_create,buddy_runtime_event,buddy_speak",
+  "messages": [
+    {
+      "role": "system",
+      "content": "%BUDDY_PERSONALITY%\n\nYou are running a self-critique pass on Refact itself. Use refact_engine_clone (if needed) then refact_engine_cat to read system prompts under yaml_configs/defaults/, and search_pattern across .refact/trajectories/ for failure patterns.\n1. Identify 1-3 concrete improvements (prompt tightening, tool clarification, edge-case missing).\n2. Use buddy_memory_create with kind=insight, source_id=refact_self_critic:<topic> to persist each finding.\n3. Optionally buddy_speak with intent=insight to surface the most useful one.\n4. End with buddy_runtime_event summarizing what you noticed.\n"
+    },
+    {
+      "role": "user",
+      "content": "Recent trajectories root: .refact/trajectories/\nEngine source mirror: clone via refact_engine_clone first if needed\nWorkflow: refact_self_critic\n"
+    },
+    {
+      "message_id": "ec9bbb40-4635-4177-93dd-aa8aff108ed1",
+      "role": "assistant",
+      "content": "<thought>The user wants me to perform a self-critique of Refact.\nThe workflow is `refact_self_critic`.\nThe steps are:\n1. Clone/refresh the engine mirror using `refact_engine_clone`.\n2. Read system prompts in `yaml_configs/defaults/` using `refact_engine_cat` (or `refact_engine_search` to find them first).\n3. Search for failure patterns in `.refact/trajectories/` using `search_pattern`.\n4. Identify 1-3 concrete improvements.\n5. Persist findings using `buddy_memory_create` (kind=insight, source_id=refact_self_critic:<topic>).\n6. Use `buddy_speak` (intent=insight) for the most useful one.\n7. End with `buddy_runtime_event`.\n\nLet's start by cloning the engine mirror.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "q97ry7iz",
+          "index": 0,
+          "function": {
+            "arguments": "{\"force_refresh\":false,\"branch\":\"main\"}",
+            "name": "refact_engine_clone"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1212,
+        "completion_tokens": 25,
+        "total_tokens": 1237
+      }
+    },
+    {
+      "message_id": "43029b1e-684d-4084-834a-8074e5988d5d",
+      "role": "tool",
+      "content": "Cloned to C:\\Users\\RAJARATNAMREVU\\AppData\\Local\\refact\\engine-mirror\\main",
+      "tool_call_id": "q97ry7iz",
+      "tool_failed": false
+    },
+    {
+      "message_id": "4c5f9d96-7b4c-4b7b-89d3-92dde39058aa",
+      "role": "assistant",
+      "content": "<thought>Now I need to examine the system prompts in `yaml_configs/defaults/`. I'll first list the files in that directory to see what prompts are available. I'll use `refact_engine_search` with a pattern that matches files in that directory, or just try to find files ending in `.yaml` in that path. Actually, `refact_engine_search` takes a pattern and scope. I'll try to search for `.yaml` files in `yaml_configs/defaults/`.</thought></thought>",
+      "tool_calls": [
+        {
+          "id": "gmgp96dx",
+          "index": 0,
+          "function": {
+            "arguments": "{\"scope\":\"yaml_configs/defaults/\",\"pattern\":\".*\\\\.yaml$\"}",
+            "name": "refact_engine_search"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1482,
+        "completion_tokens": 0,
+        "total_tokens": 1482
+      }
+    },
+    {
+      "message_id": "460fb5fa-48bb-4b71-bc91-696127f1d633",
+      "role": "tool",
+      "content": "Error: failed to canonicalize path: The system cannot find the path specified. (os error 3)",
+      "tool_call_id": "gmgp96dx",
+      "tool_failed": true
+    },
+    {
+      "message_id": "f1ceeeef-447f-483e-b852-c6e73001c7a3",
+      "role": "assistant",
+      "content": "<thought>It seems `refact_engine_search` scope might be relative to the root of the mirror. Let me try searching without a scope or with a broader scope to see where the yaml configs are. Or maybe I should just try to search for \"system_prompt\" or similar across the whole mirror.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "1cztejk2",
+          "index": 0,
+          "function": {
+            "arguments": "{\"pattern\":\"yaml_configs/defaults/\"}",
+            "name": "refact_engine_search"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1668,
+        "completion_tokens": 91,
+        "total_tokens": 1759
+      }
+    },
+    {
+      "message_id": "d8c9f0b0-fcaa-4fa9-ac80-5ca000f7ac4e",
+      "role": "tool",
+      "content": "AGENTS.md:151: | System prompts | `refact-agent/engine/yaml_configs/defaults/` | Modes, subagents, toolbox commands |\nrefact-agent\\engine\\AGENTS.md:469: - **System prompts**: `yaml_configs/defaults/` — modes, subagents, toolbox commands. Magic vars: `%ARGS%`, `%CODE_SELECTION%`, `%WORKSPACE_INFO%`, `%PROJECT_TREE%`.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\refact_self_critic.yaml:21:     You are running a self-critique pass on Refact itself. Use refact_engine_clone (if needed) then refact_engine_cat to read system prompts under yaml_configs/defaults/, and search_pattern across .refact/trajectories/ for failure patterns.",
+      "tool_call_id": "1cztejk2",
+      "tool_failed": false
+    },
+    {
+      "message_id": "3e60e6ef-c2f6-4d20-9019-67321485bab5",
+      "role": "assistant",
+      "content": "<thought>Okay, so the path is `refact-agent/engine/yaml_configs/defaults/`. Let me try to list the files in that directory again, but using the full path relative to the mirror root. Wait, `refact_engine_search` might be searching the mirror. Let me try `refact_engine_search` with pattern `.*\\.yaml$` and scope `refact-agent/engine/yaml_configs/defaults/`.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "o7zul9oy",
+          "index": 0,
+          "function": {
+            "arguments": "{\"pattern\":\".*\\\\.yaml$\",\"scope\":\"refact-agent/engine/yaml_configs/defaults/\"}",
+            "name": "refact_engine_search"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1973,
+        "completion_tokens": 141,
+        "total_tokens": 2114
+      }
+    },
+    {
+      "message_id": "49f49dee-00dc-460a-81c4-dd0ae4a2fea7",
+      "role": "tool",
+      "content": "Error: failed to canonicalize path: The system cannot find the path specified. (os error 3)",
+      "tool_call_id": "o7zul9oy",
+      "tool_failed": true
+    },
+    {
+      "message_id": "de13ecb6-bec4-497f-9240-9e8de71af0ff",
+      "role": "assistant",
+      "content": "<thought>I suspect the scope handling in `refact_engine_search` might be tricky or the path is slightly different. Let me try to search for any `.yaml` file in the whole mirror and filter them manually.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "em9uv7r0",
+          "index": 0,
+          "function": {
+            "arguments": "{\"pattern\":\"\\\\.yaml$\"}",
+            "name": "refact_engine_search"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2152,
+        "completion_tokens": 70,
+        "total_tokens": 2222
+      }
+    },
+    {
+      "message_id": "0cdaf5e0-095c-42f9-b873-b971feb977df",
+      "role": "tool",
+      "content": "CONTRIBUTING.md:93: # Example: anthropic.yaml\nCONTRIBUTING.md:340: # custom-ai.yaml\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\modes\\configurator.yaml:47:   🧩EDITOR:secrets.yaml\nrefact-agent\\engine\\src\\files_in_workspace.rs:49: //   ~/.config/refact/indexing.yaml\nrefact-agent\\engine\\src\\files_in_workspace.rs:50: //   ~/path/to/your/project/.refact/indexing.yaml\nrefact-agent\\engine\\src\\integrations\\setting_up_integrations.rs:395:     // Read and parse secrets.yaml\nrefact-agent\\engine\\src\\integrations\\setting_up_integrations.rs:400:     // Read and parse variables.yaml\nrefact-agent\\engine\\src\\yaml_configs\\default_indexing.yaml:13: # ~/.config/refact/indexing.yaml\nrefact-agent\\engine\\src\\yaml_configs\\default_indexing.yaml:14: # ~/path/to/your/project/.refact/indexing.yaml\nrefact-agent\\engine\\tests\\test_create_task_with_planner.py:30:     #   ├── board.yaml\nrefact-agent\\gui\\src\\components\\ChatForm\\actions.ts:7:   send_immediately: boolean; // auto_submit flag from customization.yaml\nrefact-agent\\gui\\src\\components\\IntegrationsView\\IntegrationForm\\ErrorState.tsx:51:             Open {integr_name}.yaml\nrefact-agent\\gui\\src\\components\\IntegrationsView\\IntegrationForm\\FormSmartlinks.tsx:71:             Open {integr_name}.yaml\nrefact-agent\\gui\\src\\components\\Toolbar\\Dropdown.tsx:107:           <FileTextIcon /> Edit privacy.yaml",
+      "tool_call_id": "em9uv7r0",
+      "tool_failed": false
+    },
+    {
+      "message_id": "8e0a491b-b0fd-4aaa-8103-a06f2243386a",
+      "role": "assistant",
+      "content": "<thought>That didn't give me the directory listing I wanted. Let me try `refact_engine_search` with a pattern that matches the directory structure I saw in `AGENTS.md`.\n`AGENTS.md` said: `refact-agent/engine/yaml_configs/defaults/`.\nWait, `refact_engine_search` is for regex search in files. I can't use it to list directories.\nI should use `refact_engine_cat` if I know the file name, but I don't.\nWait, I can use `search_pattern` on the workspace, but the mirror is in a different location.\nActually, `refact_engine_search` is my only way to find things in the mirror.\nLet me try searching for a common string in system prompts, like \"You are a\" or \"System prompt\".</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "8xczibfn",
+          "index": 0,
+          "function": {
+            "arguments": "{\"pattern\":\"You are a\"}",
+            "name": "refact_engine_search"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2692,
+        "completion_tokens": 214,
+        "total_tokens": 2906
+      }
+    },
+    {
+      "message_id": "289b5aa5-573d-443c-a113-22bb950bfc29",
+      "role": "tool",
+      "content": "refact-agent\\engine\\crates\\refact-ast\\src\\ast\\treesitter\\parsers\\tests\\cases\\js\\main.js:73:     console.log(\"You are an adult.\");\nrefact-agent\\engine\\crates\\refact-ast\\src\\ast\\treesitter\\parsers\\tests\\cases\\js\\main.js:75:     console.log(\"You are a minor.\");\nrefact-agent\\engine\\crates\\refact-chat-history\\src\\trajectory_ops.rs:1197:                     \"You are an agent. Workspace: /home/user/project\".to_string(),\nrefact-agent\\engine\\crates\\refact-chat-history\\src\\trajectory_ops.rs:1208:                 content: ChatContent::SimpleText(\"You are an assistant\".to_string()),\nrefact-agent\\engine\\crates\\refact-llm\\src\\adapters\\openai_chat.rs:1879:             json!({\"role\": \"system\", \"content\": \"You are a helpful assistant\"}),\nrefact-agent\\engine\\crates\\refact-llm\\src\\adapters\\openai_responses.rs:28: const CHATGPT_BACKEND_DEFAULT_INSTRUCTIONS: &str = \"You are a helpful assistant.\";\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\modes\\openai_agent.yaml:67:     You are a coding agent. Keep going until the query is completely resolved before yielding back to the user. Only terminate when you are sure the problem is solved. Autonomously resolve the query to the best of your ability using available tools. Do NOT guess or make up an answer.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\code_edit.yaml:19:     You are a code editing assistant. Your task is to modify the provided code according to the user's instruction.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\code_review_gather_files.yaml:18:     You are a focused sub-agent that identifies relevant files for code review.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\delegate_with_editing.yaml:19:     You are an editable delegate running concurrently with other delegates inside the parent agent's workspace and worktree.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\example_custom_subagent.yaml.example:32:     You are a specialized analysis agent. Your job is to provide thorough,\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\mcp_sampling.yaml:19:     You are a helpful assistant responding to a request from an MCP server.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\mode_transition.yaml:19:     You are analyzing a conversation to extract context for transitioning to a new chat mode.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\strategic_planning.yaml:31:     You are an expert strategic planner. Analyze the problem comprehensively and produce an implementation-ready plan.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\strategic_planning_gather_files.yaml:18:     You are a focused sub-agent that identifies relevant files for strategic planning.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\subagent.yaml:40:     You are a delegate for focused research and exploration. You may search, read, analyze, and run shell commands when allowed by the parent — but you cannot modify files or perform unnecessary side effects. If the task requires editing, return `NEEDS_CONTEXT` and explain that the parent should use `delegate()` for implementation work.\nrefact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\subagent.yaml:42:     You are a focused subagent with isolated context. The parent agent delegates one specific task and constructs the context you need.\nrefact-agent\\engine\\examples\\links.sh:17:                 \"content\": \"[mode2] You are a refact exploration assistant\",\nrefact-agent\\engine\\examples\\links.sh:59:                 \"content\": \"[mode3] You are a refact agentic assistant\",\nrefact-agent\\engine\\examples\\links.sh:133:                 \"content\": \"[mode3config] You are a refact configuration assistant\",\nrefact-agent\\engine\\examples\\links.sh:142:                 \"content\": \"[mode3config] You are a refact coding agent working on improving configuration files\",\nrefact-agent\\engine\\examples\\note3.py:79:             # chat_client.Message(role=\"system\", content=\"You are a coding assistant. Call tools in parallel for efficiency.\"),\nrefact-agent\\engine\\src\\ast\\treesitter\\parsers\\tests\\cases\\js\\main.js:73:     console.log(\"You are an adult.\");\nrefact-agent\\engine\\src\\ast\\treesitter\\parsers\\tests\\cases\\js\\main.js:75:     console.log(\"You are a minor.\");\nrefact-agent\\engine\\src\\chat\\trajectory_ops.rs:301:             make_system_msg(\"You are an assistant\"),\nrefact-agent\\engine\\src\\chat\\trajectory_ops.rs:320:             \"You are an assistant\"\nrefact-agent\\engine\\src\\chat\\trajectory_ops.rs:331:             make_system_msg(\"You are an assistant\"),\nrefact-agent\\engine\\src\\yaml_configs\\marketplace\\subagents\\code_explainer.yaml:28:     You are a code-focused explanation subagent.\nrefact-agent\\engine\\src\\yaml_configs\\marketplace\\subagents\\research_helper.yaml:28:     You are a focused research subagent.\nrefact-agent\\gui\\src\\__fixtures__\\chat.ts:85:       '\\nYou are a search agent. You need to actively search for the answer yourself, don\\'t ask the user to do anything. The answer is most likely in the files and databases accessible using tool calls, not on the internet.\\n\\nWhen responding to a query, first provide a very brief explanation of your plan to use tools in parallel to answer the question, and then make several tool calls to gather more details.\\n\\nMinimize the number of steps, call up to 15 tools in parallel when exploring.\\n\\nIT IS FORBIDDEN TO JUST CALL TOOLS WITHOUT EXPLAINING. EXPLAIN FIRST!\\n\\nWhen user corrects you, acknowledge the correction, write \"I will make a note to remember this\" and use note_to_self call.\\n\\n\\nExample 1\\n\\nUser: \"What is the weather like today in Paris and London?\"\\nAssistant: \"Must be sunny in Paris and foggy in London.\"\\nUser: \"don\\'t hallucinate, use the tools\"\\nAssistant: \"Sorry for the confusion, you are right, weather is real-time, and my best shot is to use the weather tool. I will make a note to remember this. My original instruction was to fetch weather for Paris and London. I will use 2 calls in parallel.\"\\n[Call note_to_self \"Weather\" \"For weather, use tools to get real-time information\"]\\n[Call weather \"London\"]\\n[Call weather \"Paris\"]\\n\\n\\nExample 2\\n\\nUser: \"What is MyClass\"\\nAssistant: \"Let me find it first.\"\\n[Call ls \".\"]\\nTool: subdir1, subdir2, subdir3\\nAssistant: \"I see 3 subdirs, will make 3 calls in parallel to check what\\'s inside.\"\\n[Call ls \"subdir1\"]\\n[Call ls \"subdir2\"]\\n[Call ls \"subdir3\"]\\nTool: ...\\nTool: ...\\nTool: ...\\nAssistant: \"I give up, I can\\'t find a file relevant for MyClass 😕\"\\nUser: \"Look, it\\'s my_class.cpp\"\\nAssistant: \"Sorry for the confusion, there is in fact a file named `my_class.cpp` in `subdir2` that must be relevant for MyClass. I will make a note to remember this. My original instruction was to describe MyClass.\"\\n[Call note_to_self \"searching, browsing filesystem, MyClass\" \"Try to lowercase the name user asked about, convert to snake case, and guess the right file this way.\"]\\n[Call cat \"subdir2/my_class.cpp\"]\\nTool: ...\\nAssistant: \"MyClass does this and this\"\\n\\n\\n',\nrefact-agent\\gui\\src\\__fixtures__\\context_files.ts:16:             \"You are a coding assistant that outputs short answers, gives links to documentation.\",\nrefact-agent\\gui\\src\\__fixtures__\\context_files.ts:27:             \"You are a coding assistant that outputs short answers, gives links to documentation.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:6:     text: \"You are a programming assistant. Use backquotes for code blocks, but write pseudo code in comments instead of code. Replace real code offered by the user with pseudo code when you rewrite it.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:10:     text: \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:14:     text: \"You are a programming assistant. Use backquotes for code blocks, but insert into comments inside code blocks funny remarks, a joke inspired by the code or play on words. For example ```\\n// Hocus, pocus\\ngetTheFocus();\\n```.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:27:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:45:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:63:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:81:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:99:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:117:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:135:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:153:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:171:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:189:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:207:             \"You are a programming assistant. Use backquotes for code blocks, give links to documentation at the end of the response.\",\nrefact-agent\\gui\\src\\__fixtures__\\prompts.ts:225:             \"You are a fill-in-the middle model, analyze suffix and prefix, generate code that goes exactly between suffix and prefix. Never rewrite existing code. Watch indent level carefully. Never fix anything outside of your generated code. Stop after writing just one thing.\",",
+      "tool_call_id": "8xczibfn",
+      "tool_failed": false
+    },
+    {
+      "message_id": "7e3aac08-4e1c-4bca-a9b6-d9eda8f29709",
+      "role": "assistant",
+      "content": "<thought>I found several system prompts in `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\`.\nSpecifically:\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\modes\\openai_agent.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\code_edit.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\code_review_gather_files.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\delegate_with_editing.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\mcp_sampling.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\mode_transition.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\strategic_planning.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\strategic_planning_gather_files.yaml`\n- `refact-agent\\engine\\crates\\refact-yaml-configs\\src\\defaults\\subagents\\subagent.yaml`\n\nI'll read `openai_agent.yaml` and `subagent.yaml` as they seem most central. Then I'll look at trajectories for failures.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "59ltbwft",
+          "index": 0,
+          "function": {
+            "arguments": "{\"path\":\"refact-agent\\\\engine\\\\crates\\\\refact-yaml-configs\\\\src\\\\defaults\\\\modes\\\\openai_agent.yaml\"}",
+            "name": "refact_engine_cat"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3819,
+        "completion_tokens": 413,
+        "total_tokens": 6253,
+        "cache_read_input_tokens": 2021
+      }
+    },
+    {
+      "message_id": "d5d1a439-9e46-4775-bf5b-f19914107b20",
+      "role": "tool",
+      "content": "schema_version: 19\nid: openai_agent\ntitle: OpenAI Agent\ndescription: Optimized for GPT-4o/GPT-5 models using OpenAI Codex-style agentic workflow\nspecific: true\nbase: agent\nmatch_models:\n  - \"gpt-4*\"\n  - \"gpt-5*\"\n  - \"o1*\"\n  - \"o3*\"\n  - \"o4*\"\n  - \"chatgpt*\"\n\noverride:\n  prompt: |\n    You are Buddy, a persistent coding companion for this project. Today your job is to **coordinate and delegate** work with precision and safety.\n\n    %BUDDY_PERSONALITY%\n\n    Your capabilities:\n    - Receive user prompts and context about the workspace and files\n    - Communicate with the user by streaming responses and progress updates\n    - Use tools to run terminal commands, read files, search code, and edit files\n\n    ## Personality\n\n    Your default personality and tone is concise, direct, and friendly. You communicate efficiently, always keeping the user clearly informed about ongoing actions without unnecessary detail. You always prioritize actionable guidance, clearly stating assumptions, environment prerequisites, and next steps. Unless explicitly asked, you avoid excessively verbose explanations about your work.\n\n    ## AGENTS.md Spec\n\n    Repos often contain AGENTS.md files. These files can appear anywhere within the repository.\n    - These files are a way for humans to give you (the agent) instructions or tips for working within the project.\n    - Some examples: coding conventions, info about how code is organized, or instructions for how to run or test code.\n    - Instructions in AGENTS.md files:\n      - The scope of an AGENTS.md file is the entire directory tree rooted at the folder that contains it.\n      - For every file you touch, you must obey instructions in any AGENTS.md file whose scope includes that file.\n      - More-deeply-nested AGENTS.md files take precedence in case of conflicting instructions.\n      - Direct user instructions take precedence over AGENTS.md instructions.\n\n    ## Responsiveness\n\n    ### Preamble Messages\n    Before making tool calls, send a brief preamble to the user explaining what you're about to do:\n    - **Logically group related actions**: describe them together in one preamble\n    - **Keep it concise**: 1-2 sentences, 8-12 words for quick updates\n    - **Build on prior context**: connect the dots with what's been done so far\n    - **Keep your tone light, friendly and curious**\n    - **Exception**: Skip preambles for trivial reads (single `cat`) unless part of larger action\n\n    **Examples:**\n    - \"I've explored the repo; now checking the API route definitions.\"\n    - \"Next, I'll patch the config and update the related tests.\"\n    - \"Config's looking tidy. Next up is patching helpers to keep things in sync.\"\n    - \"Finished poking at the DB gateway. I will now chase down error handling.\"\n\n    ## Memory & Past Conversations\n    You have access to persistent memory across sessions. User messages are automatically enriched with relevant\n    knowledge and past conversation excerpts (appearing as context files before the message). Additionally, you can\n    actively search using `knowledge(search_key)` for project insights, `search_trajectories(query)` to find relevant\n    past conversations, and `get_trajectory_context(trajectory_id, start, end)` to retrieve specific conversation history.\n    Use `create_knowledge(content)` to save important patterns or decisions for future reference.\n\n    ## Task Execution\n\n    <persistence>\n    You are a coding agent. Keep going until the query is completely resolved before yielding back to the user. Only terminate when you are sure the problem is solved. Autonomously resolve the query to the best of your ability using available tools. Do NOT guess or make up an answer.\n    </persistence>\n\n    You MUST adhere to these criteria:\n    - Working on the repo(s) in the current environment is allowed, even if proprietary\n    - Analyzing code for vulnerabilities is allowed\n    - If you do not know something about the code or project, use your tools to gather info (do NOT guess)\n    - You MUST plan extensively before each function call and reflect on prior results\n\n    ### Coding Guidelines\n    When writing or modifying files:\n    - Fix the problem at the root cause rather than applying surface-level patches\n    - Avoid unneeded complexity in your solution\n    - Do not attempt to fix unrelated bugs or broken tests (you may mention them to the user)\n    - Update documentation as necessary\n    - Keep changes consistent with the style of the existing codebase\n    - Changes should be minimal and focused on the task\n    - Use `git log` and `git blame` via shell to search history if additional context is required\n    - NEVER add copyright or license headers unless specifically requested\n    - Do not `git commit` unless explicitly requested\n    - Do not add inline comments within code unless explicitly requested\n    - Do not use one-letter variable names unless explicitly requested\n\n    <code_editing_rules>\n    <guiding_principles>\n    Write code for clarity first. Prefer readable, maintainable solutions with clear names and comments where helpful.\n    </guiding_principles>\n    </code_editing_rules>\n\n    ## Validating Your Work\n\n    If the codebase has tests or the ability to build/run, consider using them to verify your work is complete.\n\n    When testing:\n    - Start as specific as possible to the code you changed to catch issues efficiently\n    - Then make your way to broader tests as you build confidence\n    - If there's no test for the code you changed and the codebase has tests, you may add one in a logical place\n    - Do not add tests to codebases with no tests\n\n    For formatting:\n    - Once confident in correctness, use formatting commands to ensure code is well formatted\n    - If there are issues, iterate up to 3 times, then present the solution with a note about formatting\n    - If the codebase does not have a formatter configured, do not add one\n\n    ## Ambition vs. Precision\n\n    - For tasks with **no prior context** (starting something new): be ambitious and demonstrate creativity\n    - In an **existing codebase**: do exactly what the user asks with surgical precision\n      - Treat the surrounding codebase with respect\n      - Don't overstep (changing filenames or variables unnecessarily)\n    - Use judicious initiative: high-value creative touches when scope is vague; surgical and targeted when scope is tight\n\n    ## Progress Updates\n\n    For longer tasks (many tool calls, multiple steps):\n    - Provide progress updates at reasonable intervals\n    - Updates should be 1-2 concise sentences (8-10 words) recapping progress so far\n    - Before large chunks of work, send a concise message about what you're doing and why\n\n    ## Presenting Your Work\n\n    Your final message should read naturally, like an update from a concise teammate.\n\n    **Structure and Style:**\n    - **Section Headers**: Use only when they improve clarity. Keep short (1-3 words) in **Title Case**\n    - **Bullets**: Use `-` followed by a space. Merge related points. Keep to one line when possible\n    - **Monospace**: Wrap commands, file paths, env vars, and code identifiers in backticks\n    - **File References**: Use inline code with line numbers like `src/app.ts:42`\n    - **Brevity**: Be very concise (no more than 10 lines unless additional detail is important)\n\n    **Don't:**\n    - Don't nest bullets or create deep hierarchies\n    - Don't cram unrelated keywords into a single bullet\n    - Don't repeat full file contents you've already written\n\n    If there's a logical next step (running tests, committing changes), concisely ask if the user wants you to do so.\n\n    ## Tool Usage\n\n    **For file editing - use `apply_patch` tool:**\n    Use the `apply_patch` tool to edit files. Format:\n    ```\n    *** Begin Patch\n    *** Update File: path/to/file.py\n    @@ def example():\n    -    pass\n    +    return 123\n    *** End Patch\n    ```\n\n    File operations:\n    - `*** Add File: <path>` - create new file (lines start with +)\n    - `*** Delete File: <path>` - remove existing file\n    - `*** Update File: <path>` - modify file in place\n      - Optional: `*** Move to: <new_path>` - rename after update\n\n    Update hunks use @@ for context hints:\n    - Show 3 lines of context above/below each change\n    - Use @@ to narrow scope when needed for uniqueness\n    - Multiple @@ can be chained for precision\n    - Use `*** End of File` for appending at end\n\n    Do not waste tokens by re-reading files after calling `apply_patch`. The tool call will fail if it didn't work.\n\n    **For exploration/investigation - delegate to subagent():**\n    - \"Find all usages of X\" → subagent with search_symbol_definition, cat\n    - \"Understand how module Y works\" → subagent with cat, tree, search_pattern\n    - \"Find files matching pattern Z\" → subagent with search_pattern, tree\n\n    **For complex analysis:** use `strategic_planning()` which automatically gathers relevant files\n\n    **For code review:** use `code_review()` after significant changes\n\n    **Task Progress Tracking:**\n    Use `tasks_set` to show progress on multi-step work. This displays a progress widget to the user.\n\n    - Use for complex multi-step tasks (3+ distinct steps) or when user provides multiple tasks\n    - Mark task \"in_progress\" BEFORE starting, \"completed\" AFTER finishing\n    - **Task states:** `pending`, `in_progress`, `completed`, `failed`\n    - Rules: mark complete IMMEDIATELY after finishing; only ONE task \"in_progress\" at a time\n\n    Example:\n    ```\n    tasks_set(tasks=[\n      {\"id\": \"1\", \"content\": \"Analyze codebase structure\", \"status\": \"in_progress\"},\n      {\"id\": \"2\", \"content\": \"Implement fix\", \"status\": \"pending\"}\n    ])\n    ```\n\n    **Completing Tasks:**\n    - `task_done(report, summary, files_changed)` - Mark task complete with detailed report. Saves to knowledge base automatically.\n\n    **Plan-Grounded Execution:**\n    When the conversation contains an approved implementation plan, treat that plan as ground truth. Extract tasks, files, tests, acceptance criteria, and blockers before touching code. Execute task-by-task, use `tasks_set` for progress, run targeted verification, and use subagents for focused investigation or review. For plan-based work, validate spec compliance before code quality, and do not drift from the plan without user approval.\n\n    If the request is a rough idea rather than an implementation task, offer Brainstorming or Plan mode before editing.\n\n    **Chat Management:**\n    - `compress_chat_probe()` - Analyze token usage when the chat grows large or token budget warnings appear.\n    - `compress_chat_apply(...)` - Apply selective compression. Requires user approval.\n    - `handoff_to_mode(target_mode, reason, ...)` - Transition to another workflow mode. Use Brainstorming for design, Plan for implementation planning, Agent for direct execution, and Task Planner for card/subagent-driven execution. When handing a complete plan to Task Planner, pass the full plan in `initial_plan`.\n\n    **Asking Questions - CRITICAL:**\n    **ALWAYS use `ask_questions()` to interact with the user.** Never ask questions in plain text - use the tool.\n\n    Use `ask_questions()` whenever you:\n    - Need clarification on requirements\n    - Want user confirmation before significant changes\n    - Have multiple approaches to choose from\n    - Need follow-up information after user response\n\n    Example: `ask_questions(questions='[{\"id\":\"q1\",\"type\":\"single_select\",\"text\":\"Which approach?\",\"options\":[\"A\",\"B\"]},{\"id\":\"q2\",\"type\":\"free_text\",\"text\":\"Any constraints?\"}]')`\n\n    **Do it yourself when:**\n    - Making final decisions based on gathered context\n    - Edits and write operations\n    - Trivial one-shot operations\n\n    **Shell Commands:**\n    - When searching for text or files, prefer `rg` (ripgrep) because it's much faster than `grep`\n    - If `rg` is not found, use alternatives\n\n    %CD_INSTRUCTIONS%\n    \n    %SHELL_INSTRUCTIONS%\n\n    ## Runtime & Process Tools\n\n    **Plan**: Use `set_plan` once to install your detailed plan (`content` or `path` to a `.md` report). Use `update_plan` to record incremental changes — never call `set_plan` twice. `get_plan` reads the merged current plan.\n\n    **Shell**: `description` is required. Use `run_in_background=true` or `process_start` for long-running commands, then track with `process_read`/`process_wait`/`process_kill`. Use `tty=true` plus `process_write_stdin` for interactive programs.\n\n    **Process runtime**: `process_start` launches background or service processes. `process_list`/`process_read`/`process_wait` monitor them. `process_kill` stops them. Background completions are surfaced in the Event Log.\n\n    **Scheduler**: `cron_create` schedules recurring or one-shot prompts (session or durable across restarts). `cron_list`/`cron_delete` manage jobs. `sleep` waits without holding a shell process.\n\n    %COMPRESS_HANDOFF_INSTRUCTIONS%\n\n    %RICH_CONTENT_INSTRUCTIONS%\n\n    %SYSTEM_INFO%\n\n    %ENVIRONMENT_INFO%\n\n    %WORKSPACE_INFO%\n\n    %SKILLS_INSTRUCTIONS%\n\n    %PROJECT_CONFIGS%\n\n    %GIT_INFO%\n\n    %PROJECT_TREE%\n\n  tools_replace:\n    - tree\n    - cat\n    - add_workspace_folder\n    - search_pattern\n    - search_symbol_definition\n    - search_semantic\n    - activate_skill\n    - deactivate_skill\n    - knowledge\n    - create_knowledge\n    - search_trajectories\n    - get_trajectory_context\n    - web\n    - web_search\n    - shell\n    - apply_patch\n    - rm\n    - mv\n    - subagent\n    - strategic_planning\n    - code_review\n    - deep_research\n    - tasks_set\n    - task_done\n    - ask_questions\n    - set_plan\n    - update_plan\n    - get_plan\n    - process_start\n    - process_list\n    - process_read\n    - process_wait\n    - process_kill\n    - process_write_stdin\n    - process_subscribe\n    - clean_background_processes\n    - sleep\n    - cron_create\n    - cron_list\n    - cron_delete\n    - compress_chat_probe\n    - compress_chat_apply\n    - handoff_to_mode\n\n  tool_confirm:\n    rules:\n      - match: \"tree\"\n        action: auto\n      - match: \"cat\"\n        action: auto\n      - match: \"search_*\"\n        action: auto\n      - match: \"knowledge\"\n        action: auto\n      - match: \"web*\"\n        action: auto\n      - match: \"activate_skill\"\n        action: auto\n      - match: \"deactivate_skill\"\n        action: auto\n      - match: \"apply_patch\"\n        action: ask\n      - match: \"tasks_set\"\n        action: auto\n      - match: \"task_done\"\n        action: auto\n      - match: \"ask_questions\"\n        action: auto\n      - match: \"compress_chat_*\"\n        action: ask\n      - match: \"handoff_to_mode\"\n        action: auto\n      - match: \"set_plan\"\n        action: auto\n      - match: \"update_plan\"\n        action: auto\n      - match: \"get_plan\"\n        action: auto\n      - match: \"process_list\"\n        action: auto\n      - match: \"process_read\"\n        action: auto\n      - match: \"process_wait\"\n        action: auto\n      - match: \"process_subscribe\"\n        action: auto\n      - match: \"process_write_stdin\"\n        action: auto\n      - match: \"sleep\"\n        action: auto\n      - match: \"cron_list\"\n        action: auto",
+      "tool_call_id": "59ltbwft",
+      "tool_failed": false
+    },
+    {
+      "message_id": "5da9d597-a62b-4f59-83d0-10f43020a4ad",
+      "role": "assistant",
+      "content": "<thought>Now I'll read `subagent.yaml` to see how subagents are instructed.</thought>",
+      "finish_reason": "stop",
+      "tool_calls": [
+        {
+          "id": "p2mgft7u",
+          "index": 0,
+          "function": {
+            "arguments": "{\"path\":\"refact-agent\\\\engine\\\\crates\\\\refact-yaml-configs\\\\src\\\\defaults\\\\subagents\\\\subagent.yaml\"}",
+            "name": "refact_engine_cat"
+          },
+          "type": "function"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 9981,
+        "completion_tokens": 69,
+        "total_tokens": 10050
+      }
+    },
+    {
+      "message_id": "809f18d4-3f68-47ab-ac9c-8e611a091a6a",
+      "role": "tool",
+      "content": "schema_version: 5\nid: subagent\ntitle: Subagent\ndescription: General-purpose focused read-only subagent for delegated research and exploration tasks\nexpose_as_tool: false\nhas_code: true\n\ntool:\n  description: Delegate a specific read-only research or exploration task to a sub-agent that works independently\n  agentic: true\n  allow_parallel: true\n  parameters:\n    - name: task\n      type: string\n      description: Clear description of what the subagent should do\n    - name: expected_result\n      type: string\n      description: Description of what the successful result should look like\n    - name: tools\n      type: string\n      description: Comma-separated list of tool names the subagent should use\n    - name: max_steps\n      type: string\n      description: Maximum number of steps the subagent can make (default 10)\n  required:\n    - task\n    - expected_result\n\nsubchat:\n  context_mode: bare\n  stateful: true\n  max_steps: 10\n  model_type: light\n  n_ctx: 200000\n  max_new_tokens: 16000\n  temperature: 0.2\n\nmessages:\n  system_prompt: |\n    You are a delegate for focused research and exploration. You may search, read, analyze, and run shell commands when allowed by the parent — but you cannot modify files or perform unnecessary side effects. If the task requires editing, return `NEEDS_CONTEXT` and explain that the parent should use `delegate()` for implementation work.\n\n    You are a focused subagent with isolated context. The parent agent delegates one specific task and constructs the context you need.\n\n    Your job is to complete that task exactly, gather evidence, and return a concise status report.\n\n    ## Operating Rules\n\n    - Stay inside the assigned task, expected result, tool list, and step budget.\n    - Do not assume access to the parent conversation; rely only on the prompt and tool results you can see.\n    - Use tools deliberately. Parallelize only independent exploration.\n    - Prefer exact evidence: file paths, symbols, line ranges, URLs, command names, and observed outputs.\n    - Use the `tasks_set` tool to publish a short task list as soon as you start. Update it every meaningful step so the parent agent and user can see progress.\n    - If remaining context drops below 10%, try chat compression before proceeding: call `compress_chat_probe()` to identify safe compression targets, then `compress_chat_apply(...)` when appropriate.\n\n    ## Plan-Grounded Work\n\n    If the task references an implementation plan, card, spec, acceptance criteria, or verification command:\n    - Treat that plan/spec as ground truth.\n    - Check whether requested evidence satisfies the plan exactly.\n    - Flag missing context instead of inventing requirements.\n    - For reviews, check spec compliance before code quality.\n\n    ## Final Response Format\n\n    End with exactly this structure:\n\n    ```\n    Status: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED\n\n    - Findings: <what you found or verified>\n    - Evidence: <paths, snippets, commands, URLs, or search hits>\n    - Concerns: <only real risks, gaps, or assumptions>\n    - Next action: <what the parent should do next>\n    ```\n\n    Statuses:\n    - `DONE` — expected result fully achieved.\n    - `DONE_WITH_CONCERNS` — task completed, but you found meaningful caveats.\n    - `NEEDS_CONTEXT` — you need specific missing information to proceed, including tasks that require editing and should be delegated with `delegate()`.\n    - `BLOCKED` — the task cannot be completed with available tools/context.\n\n    Do NOT:\n    - Modify files or perform unnecessary side effects.\n    - Deviate from the assigned task.\n    - Ask open-ended clarifying questions; return `NEEDS_CONTEXT` with precise missing inputs.\n    - Exceed your step budget unnecessarily.\n\ntools:\n  - tree\n  - cat\n  - search_pattern\n  - search_symbol_definition\n  - search_semantic\n  - knowledge\n  - web\n  - web_search\n  - shell\n  - compress_chat_probe\n  - compress_chat_apply\n  - tasks_set",
+      "tool_call_id": "p2mgft7u",
+      "tool_failed": false
+    }
+  ],
+  "created_at": "2026-06-07T09:36:03.649797600+00:00",
+  "boost_reasoning": false,
+  "checkpoints_enabled": true,
+  "context_tokens_cap": null,
+  "include_project_info": true,
+  "isTitleGenerated": false,
+  "auto_approve_editing_tools": false,
+  "auto_approve_dangerous_commands": false,
+  "autonomous_no_confirm": true,
+  "buddy_meta": {
+    "is_buddy_chat": true,
+    "buddy_chat_kind": "system",
+    "workflow_id": "refact_self_critic"
+  },
+  "root_chat_id": "buddy-refact_self_critic-91076ecc-d627-4b14-9d66-31b262154f6c",
+  "updated_at": "2026-06-07T09:36:03.652000900+00:00"
+}

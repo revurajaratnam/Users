@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Routes} from "react-router-dom";
 import Login from "../pages/Login";
 import Navbar from "../components/NavBar";
 import Registration from "../pages/Register";
+import Dashboard from "../features/authentication/components/Dashboard";
 
   const Routers = createBrowserRouter([
    
@@ -18,6 +19,10 @@ import Registration from "../pages/Register";
       path:"/signup",
       element: <Registration/>
   },
+  {
+    path:"/dashboard",
+    element: <Dashboard></Dashboard>
+  }
   ]);
  
  export default function AppRoutes() {
