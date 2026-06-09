@@ -10,7 +10,7 @@ const token = localStorage.getItem('Token');
     return(
         <div>
             {
-                <UserNav></UserNav>
+                <UserNav> </UserNav>
             }
             <h1>Hello This is the dashboard</h1>
             <h2>Welcome {user || "Guest" + "User"}</h2>
