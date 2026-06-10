@@ -10,6 +10,7 @@ export default function Navbar() {
             <div className="d-flex gap-3">
            <Link to={"/signin"}> <button>Sign In</button></Link>
            <Link to={"/signup"}> <button>Sign Up</button></Link>
+           <Link to={"/user"}><button>User Registration</button></Link>
             </div>
             
         </div>
