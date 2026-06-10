@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Navbar from "../components/NavBar";
 import Registration from "../pages/Register";
 import Dashboard from "../features/authentication/components/Dashboard";
+import UserRegistration from "../features/authentication/components/UserRegistration";
 
   const Routers = createBrowserRouter([
    
@@ -22,6 +23,10 @@ import Dashboard from "../features/authentication/components/Dashboard";
   {
     path:"/dashboard",
     element: <Dashboard></Dashboard>
+  },
+  {
+    path:"/user",
+    element:<UserRegistration></UserRegistration>
   }
   ]);
  
