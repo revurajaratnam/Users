@@ -38,15 +38,17 @@ export default function SignIn() {
 
   return (
     <div>
-      <h1>Sign In</h1>
+      <h1 className="text-center">Sign In</h1>
 
       <form onSubmit={handleSubmit}>
-        <input
+       <div className="container">
+       <input
           type="text"
           name="uname"
           placeholder="Enter UserName"
           value={formdata.uname}
-          onChange={handleOnchange}
+          className="form-control"         
+           onChange={handleOnchange}
         />
 
         <br />
@@ -56,6 +58,7 @@ export default function SignIn() {
           name="password"
           placeholder="Enter password"
           value={formdata.password}
+          className="form-control"         
           onChange={handleOnchange}
           
         />
@@ -63,16 +66,19 @@ export default function SignIn() {
         <br />
        
         <input type="checkbox"
+        className="form-check-input"
         onClick={handleonPass}
          />   {!show?"Show Password":"Hide Password"}
           <br />
 
         <button type="submit" disabled={isLoading}
+                className="btn btn-primary"
         
         >
           {isLoading ? "Signing in..." : "Sign In"}
           
         </button>
+       </div>
 
         {error && (
           <p style={{ color: "red" }}>
