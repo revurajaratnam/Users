@@ -68,6 +68,7 @@ export default function SignUp() {
            <input 
            id="firstname"
             type="text"
+            className="form-control"
             placeholder=" Enter First Name"
             name="firstname"
             value={formData.firstname}
